@@ -17,7 +17,7 @@ function createClient() {
     // Exibir "estou online" no console a cada 30 segundos
     setInterval(() => {
       log('estou online');
-    }, 30000); // 30000 milissegundos = 30 segundos
+    }, 10000); // 30000 milissegundos = 30 segundos
   });
 
   // Evento para capturar logs de erro
