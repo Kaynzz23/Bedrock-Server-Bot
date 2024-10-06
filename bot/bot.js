@@ -13,6 +13,11 @@ function createClient() {
   // Log ao conectar no servidor
   client.on('join', () => {
     log(`${config.username} conectado ao servidor ${config.host}:${config.port}`);
+
+    // Exibir "estou online" no console a cada 30 segundos
+    setInterval(() => {
+      log('estou online');
+    }, 30000); // 30000 milissegundos = 30 segundos
   });
 
   // Evento para capturar logs de erro
