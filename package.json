@@ -1,0 +1,23 @@
+{
+  "name": "minecraft-bedrock-bot",
+  "version": "1.0",
+  "description": "Um bot sofisticado para Minecraft Bedrock usando bedrock-protocol",
+  "main": "index.js",
+  "scripts": {
+   "start": "concurrently \"npm run mine-bot\" \"npm run discord-bot\"",
+    "mine-bot": "node ./bot/bot.js",
+    "discord-bot": "node ./discord/index.js",
+    "wait-and-start-discord": "sleep 5 && npm run discord-bot",
+    "test": "echo \"Erro: nenhum teste especificado\" && exit 1"
+  },
+  "author": "Kaynzz",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bedrock-protocol": "^3.39.0",
+    "concurrently": "^9.0.1",
+    "discord.js": "^14.16.2",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
