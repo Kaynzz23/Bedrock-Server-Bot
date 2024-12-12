@@ -1,23 +1,25 @@
 {
-  "name": "minecraft-bedrock-bot",
-  "version": "1.0",
-  "description": "Um bot sofisticado para Minecraft Bedrock usando bedrock-protocol",
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-   "start": "concurrently \"npm run mine-bot\" \"npm run discord-bot\"",
-    "mine-bot": "node ./bot/bot.js",
-    "discord-bot": "node ./discord/index.js",
-    "wait-and-start-discord": "sleep 5 && npm run discord-bot",
-    "test": "echo \"Erro: nenhum teste especificado\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Kaynzz",
+  "keywords": [],
+  "author": "",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.7.7",
-    "bedrock-protocol": "^3.39.0",
-    "concurrently": "^9.0.1",
-    "discord.js": "^14.16.2",
-    "fs": "^0.0.1-security",
-    "path": "^0.12.7"
+    "@types/node": "^18.0.6",
+    "express": "^4.18.1",
+    "minecraft-data": "^3.9.1",
+    "minecraft-protocol": "^1.51.0",
+    "mineflayer": "^4.23.0",
+    "mineflayer-armor-manager": "^1.4.2",
+    "mineflayer-auto-auth": "^2.0.0",
+    "mineflayer-pathfinder": "^2.4.5",
+    "mineflayer-pvp": "^1.3.2",
+    "node": "^23.4.0",
+    "node-fetch": "^3.2.6"
   }
 }
