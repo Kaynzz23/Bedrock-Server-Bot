@@ -1,46 +1,72 @@
-const bedrock = require('bedrock-protocol');
-const { log } = require('./logger');
-const config = require('./config.json');
+const express = require("express");
+const http = require("http");
+const mineflayer = require('mineflayer');
+const { pathfinder, Movements, goals } = require('mineflayer-pathfinder');
+const app = express();
 
-// Função para criar o cliente e conectar ao servidor
-function createClient() {
-  const client = bedrock.createClient({
-    host: config.host,
-    port: config.port,
-    username: config.username,
+app.use(express.json());
+app.get("/", (_, res) => res.sendFile(__dirname + "/index.html"));
+app.listen(process.env.PORT);
+
+// Mantém o servidor Replit ativo
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.repl.co/`);
+}, 900000);
+
+function createBot() {
+  const bot = mineflayer.createBot({
+    host: 'MineDaDrg.aternos.me',
+    version: '1.20.1', // Ajuste conforme necessário
+    username: 'DRGbot',
+    port: 51233
   });
 
-  // Log ao conectar no servidor
-  client.on('join', () => {
-    log(`${config.username} conectado ao servidor ${config.host}:${config.port}`);
+  // Importa o módulo de pathfinding
+  bot.loadPlugin(pathfinder);
 
-    // Exibir "estou online" no console a cada 30 segundos
-    setInterval(() => {
-      log('estou online');
-    }, 10000); // 30000 milissegundos = 30 segundos
+  bot.on('kicked', (reason) => {
+    console.log(`Fui expulso do servidor. Motivo: ${reason}`);
   });
 
-  // Evento para capturar logs de erro
-  client.on('error', (err) => {
-    log(`Erro no bot: ${err}`);
+  bot.on('error', (err) => {
+    console.log(`Erro detectado: ${err.message}`);
   });
 
-  // Evento para capturar a desconexão
-  client.on('close', () => {
-    log('Bot foi desconectado.');
-    log('Tentando reconectar em 10 segundos...');
-    setTimeout(() => {
-      log('Reconectando...');
-      createClient(); // Recria o cliente para reconectar
-    }, 10000); // Reconectar após 10 segundos
+  bot.on('end', () => {
+    console.log('Bot desconectado! Tentando reconectar em 30 segundos...');
+    setTimeout(createBot, 30000);
   });
 
-  // Log de todas as mensagens recebidas no chat
-  client.on('text', (packet) => {
-    const { message, source_name } = packet;
-    log(`${source_name}: ${message}`);
+  bot.on('spawn', () => {
+    const defaultMove = new Movements(bot, bot.world);
+    bot.pathfinder.setMovements(defaultMove);
+
+    // Verificar o tempo e tentar dormir à noite
+    bot.on('time', () => {
+      if (bot.time.isNight) {
+        const bed = bot.findBlock({
+          matching: block => bot.isABed(block)
+        });
+
+        if (bed) {
+          console.log('Cama encontrada! Movendo até ela...');
+          bot.pathfinder.setGoal(new goals.GoalBlock(bed.position.x, bed.position.y, bed.position.z));
+
+          bot.once('goal_reached', () => {
+            bot.sleep(bed, (err) => {
+              if (err) {
+                console.log('Não consegui dormir:', err.message);
+              } else {
+                console.log('O bot está dormindo!');
+              }
+            });
+          });
+        } else {
+          console.log('Nenhuma cama encontrada para dormir.');
+        }
+      }
+    });
   });
 }
 
-// Iniciar o bot
-createClient();
+createBot();
